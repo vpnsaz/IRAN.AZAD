@@ -144,6 +144,16 @@ footer{margin-top:1.5rem;font-size:.75rem;opacity:.7;text-align:center}
 <footer> به‌روزرسانی توسط  <strong>© 2025 IRAN.AZAD </strong></footer>
 
 <script>
+/* اضافه کردن در ابتدای script برای پاک کردن کنسول */
+console.clear();
+
+// یا مخفی کردن خطاهای افزونه
+const originalError = console.error;
+console.error = function(...args) {
+  if (args[0] && args[0].includes('content_script')) return;
+  originalError.apply(console, args);
+};
+
 /* ---------- بارگذاری کانفیگ‌ها ---------- */
 let allConfigsText = ''; // ذخیره متن کل کانفیگ‌ها
 
