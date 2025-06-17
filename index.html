@@ -92,28 +92,6 @@ footer{margin-top:1.5rem;font-size:.75rem;opacity:.7;text-align:center}
   .config-text{font-size:.78rem}
   .copy-btn{padding:.3rem .6rem;font-size:.75rem}
 }
-
-/* اضافه کردن به قسمت style */
-.btn-action{
-  font-size: .42rem;            /* 35% کوچک‌تر از .65rem */
-  padding: .29rem .58rem;       /* 35% کوچک‌تر از .45rem .9rem */
-  background:linear-gradient(90deg,#00c9ff 0%,#92fe9d 100%);
-  color:#04252e;
-  border:none;border-radius:8px;
-  font-weight:700;text-decoration:none;
-  cursor:pointer;transition:filter .2s;
-  margin:.3rem;
-}
-.btn-action:hover{filter:brightness(1.08)}
-.btn-action:disabled{opacity:.6;cursor:not-allowed}
-
-.ping-display{
-  font-size:.7rem;
-  color:#92fe9d;
-  margin-right:.5rem;
-  min-width:35px;
-  display:inline-block;
-}
 </style>
 
 <body>
@@ -134,159 +112,36 @@ footer{margin-top:1.5rem;font-size:.75rem;opacity:.7;text-align:center}
   <div id="last-update">در حال بررسی آخرین به‌روزرسانی…</div>
 </header>
 
-<div style="margin-bottom:1rem;text-align:center;">
-  <button id="copy-all-btn" class="btn-action">کپی کل کانفیگ‌ها</button>
-  <button id="test-speed-btn" class="btn-action">تست سرعت و مرتب‌سازی</button>
-</div>
-
 <div id="box"><div id="loading">در حال بارگیری…</div></div>
 
 <footer> به‌روزرسانی توسط  <strong>© 2025 IRAN.AZAD </strong></footer>
 
 <script>
-/* اضافه کردن در ابتدای script برای پاک کردن کنسول */
-console.clear();
-
-// یا مخفی کردن خطاهای افزونه
-const originalError = console.error;
-console.error = function(...args) {
-  if (args[0] && args[0].includes('content_script')) return;
-  originalError.apply(console, args);
-};
-
 /* ---------- بارگذاری کانفیگ‌ها ---------- */
-let allConfigsText = ''; // ذخیره متن کل کانفیگ‌ها
-
-// استخراج دامنه از کانفیگ
-function extractDomain(config) {
-  try {
-    // برای VLESS و Trojan
-    if (config.includes('vless://') || config.includes('trojan://')) {
-      const match = config.match(/@([^:]+):/);
-      return match ? match[1] : null;
-    }
-    // برای VMess
-    if (config.includes('vmess://')) {
-      const match = config.match(/@([^:]+):/);
-      if (match) return match[1];
-      
-      // اگر Base64 باشد
-      try {
-        const decoded = atob(config.replace('vmess://', ''));
-        const data = JSON.parse(decoded);
-        return data.add || data.host;
-      } catch (e) {
-        return null;
-      }
-    }
-    // جستجوی عمومی برای IP یا دامنه
-    const domainMatch = config.match(/(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})|([a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/);
-    return domainMatch ? domainMatch[0] : null;
-  } catch (e) {
-    return null;
-  }
-}
-
-// تست پینگ با Image
-function testPing(domain) {
-  return new Promise((resolve) => {
-    if (!domain) {
-      resolve(9999);
-      return;
-    }
-    
-    const img = new Image();
-    const startTime = Date.now();
-    const timeout = setTimeout(() => {
-      resolve(9999);
-    }, 5000);
-    
-    img.onload = img.onerror = () => {
-      clearTimeout(timeout);
-      const ping = Date.now() - startTime;
-      resolve(ping);
-    };
-    
-    img.src = `https://${domain}/favicon.ico?t=${Date.now()}`;
-  });
-}
-
-// کپی کل کانفیگ‌ها
-function copyAllConfigs() {
-  const btn = document.getElementById('copy-all-btn');
-  if (!allConfigsText) {
-    btn.textContent = 'هیچ کانفیگی یافت نشد!';
-    setTimeout(() => btn.textContent = 'کپی کل کانفیگ‌ها', 1500);
-    return;
-  }
-  
-  navigator.clipboard.writeText(allConfigsText).then(() => {
-    const prevText = btn.textContent;
-    btn.textContent = 'تمام کانفیگ‌ها کپی شد!';
-    setTimeout(() => btn.textContent = prevText, 1500);
-  }).catch(() => {
-    btn.textContent = 'خطا در کپی!';
-    setTimeout(() => btn.textContent = 'کپی کل کانفیگ‌ها', 1500);
-  });
-}
-
-// تست سرعت و مرتب‌سازی
-async function testSpeedAndSort() {
-  const btn = document.getElementById('test-speed-btn');
-  const configItems = document.querySelectorAll('.config-item');
-  
-  if (configItems.length === 0) return;
-  
-  btn.disabled = true;
-  btn.textContent = 'در حال تست...';
-  
-  const results = [];
-  
-  // تست همه کانفیگ‌ها
-  for (let i = 0; i < configItems.length; i++) {
-    const item = configItems[i];
-    const configText = item.querySelector('.config-text').textContent;
-    const domain = extractDomain(configText);
-    
-    // نمایش وضعیت
-    let pingSpan = item.querySelector('.ping-display');
-    if (!pingSpan) {
-      pingSpan = document.createElement('span');
-      pingSpan.className = 'ping-display';
-      item.insertBefore(pingSpan, item.querySelector('.copy-btn'));
-    }
-    
-    pingSpan.textContent = '...';
-    
-    const ping = await testPing(domain);
-    const displayPing = ping >= 9999 ? '∞' : `${ping}ms`;
-    pingSpan.textContent = displayPing;
-    
-    results.push({
-      element: item,
-      ping: ping,
-      config: configText
+fetch('configs.txt')
+  .then(r=>r.text())
+  .then(text=>{
+    const box=document.getElementById('box');
+    box.innerHTML='';
+    const lines=text.trim().split(/\r?\n/).filter(Boolean);
+    if(!lines.length){box.textContent='فایلی یافت نشد';return;}
+    lines.forEach(line=>{
+      const item=document.createElement('div');item.className='config-item';
+      const span=document.createElement('span');span.className='config-text';span.textContent=line;
+      const btn=document.createElement('button');btn.className='copy-btn';btn.textContent='Copy';
+      btn.onclick=()=>{
+        navigator.clipboard.writeText(line).then(()=>{
+          const prev=btn.textContent;btn.textContent='Copied!';
+          setTimeout(()=>btn.textContent=prev,1500);
+        });
+      };
+      item.append(span,btn);box.appendChild(item);
     });
     
-    // تاخیر کوچک برای جلوگیری از فشار به شبکه
-    if (i < configItems.length - 1) {
-      await new Promise(resolve => setTimeout(resolve, 100));
-    }
-  }
-  
-  // مرتب‌سازی بر اساس پینگ
-  results.sort((a, b) => a.ping - b.ping);
-  
-  // مرتب‌سازی مجدد در DOM
-  const box = document.getElementById('box');
-  box.innerHTML = '';
-  results.forEach(result => {
-    box.appendChild(result.element);
-  });
-  
-  btn.disabled = false;
-  btn.textContent = 'تست سرعت و مرتب‌سازی';
-}
+    // بررسی آخرین به‌روزرسانی فایل
+    checkLastUpdate();
+  })
+  .catch(()=>document.getElementById('box').textContent='خطا در بارگیری فایل');
 
 /* ---------- بررسی آخرین به‌روزرسانی ---------- */
 function checkLastUpdate(){
