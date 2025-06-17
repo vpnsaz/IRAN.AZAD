@@ -36,13 +36,15 @@ header{
   margin-bottom:1.2rem;
 }
 .btn-download{
-  display:inline-block;
-  padding:.7rem 1.4rem;
+  font-size: .65rem;            /* کوچک‌تر از حالت پیش‌فرض (۱rem) */
+  padding: .45rem .9rem;        /* قبلاً .7rem 1.4rem بود → ×0.65 */
   background:linear-gradient(90deg,#00c9ff 0%,#92fe9d 100%);
   color:#04252e;
   border:none;border-radius:8px;
   font-weight:700;text-decoration:none;
   transition:filter .2s
+}
+
 }
 .btn-download:hover{filter:brightness(1.08)}
 
@@ -102,7 +104,7 @@ footer{margin-top:1.5rem;font-size:.75rem;opacity:.7;text-align:center}
 
 <div id="box"><div id="loading">در حال بارگیری…</div></div>
 
-<footer>  به‌روزرسانی توسط  <strong> © 2025 IRAN.AZAD </strong></footer>
+<footer> به‌روزرسانی توسط  <strong>© 2025 IRAN.AZAD </strong></footer>
 
 <script>
 /* ---------- بارگذاری کانفیگ‌ها ---------- */
@@ -143,3 +145,14 @@ updateDateTime(); setInterval(updateDateTime,30000);
 
 </body>
 </html>
+/**
+ * Fetches and displays V2Ray configuration lines from a text file.
+ * 
+ * This script performs the following actions:
+ * 1. Retrieves configuration lines from 'configs.txt'
+ * 2. Dynamically creates configuration items in the DOM
+ * 3. Adds a copy button for each configuration line
+ * 4. Handles empty file or fetch errors with appropriate messages
+ * 
+ * @throws {Error} If there is an issue fetching the configuration file
+ */
