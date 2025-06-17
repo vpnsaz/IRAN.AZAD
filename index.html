@@ -125,7 +125,9 @@ fetch('configs.txt')
     box.innerHTML='';
     const lines=text.trim().split(/\r?\n/).filter(Boolean);
     if(!lines.length){box.textContent='فایلی یافت نشد';return;}
-    lines.forEach(line=>{
+    
+    // معکوس کردن ترتیب خطوط تا جدیدترین‌ها بالا باشند
+    lines.reverse().forEach(line=>{
       const item=document.createElement('div');item.className='config-item';
       const span=document.createElement('span');span.className='config-text';span.textContent=line;
       const btn=document.createElement('button');btn.className='copy-btn';btn.textContent='Copy';
