@@ -56,6 +56,15 @@ h1{
 /* تاریخ */
 #datetime{font-size:.8rem;margin-top:.4rem;opacity:.85}
 
+/* متن به‌روزرسانی */
+#last-update{
+  font-size:.7rem;
+  margin-top:.3rem;
+  opacity:.7;
+  color:#92fe9d;
+  text-align:center
+}
+
 /* ——— جعبه کانفیگ‌ها ——— */
 #box{
   background:#ffffff0d;border:1px solid #ffffff22;
@@ -100,6 +109,7 @@ footer{margin-top:1.5rem;font-size:.75rem;opacity:.7;text-align:center}
 
   <h1>جدیدترین کانفیگ‌های&nbsp;V2Ray</h1>
   <div id="datetime">در حال به‌روزرسانی…</div>
+  <div id="last-update">در حال بررسی آخرین به‌روزرسانی…</div>
 </header>
 
 <div id="box"><div id="loading">در حال بارگیری…</div></div>
@@ -127,8 +137,47 @@ fetch('configs.txt')
       };
       item.append(span,btn);box.appendChild(item);
     });
+    
+    // بررسی آخرین به‌روزرسانی فایل
+    checkLastUpdate();
   })
   .catch(()=>document.getElementById('box').textContent='خطا در بارگیری فایل');
+
+/* ---------- بررسی آخرین به‌روزرسانی ---------- */
+function checkLastUpdate(){
+  fetch('configs.txt', {method: 'HEAD'})
+    .then(response => {
+      const lastModified = response.headers.get('Last-Modified');
+      if(lastModified){
+        const fileDate = new Date(lastModified);
+        const now = new Date();
+        const diffMs = now - fileDate;
+        const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+        const diffDays = Math.floor(diffHours / 24);
+        
+        let updateText = '';
+        if(diffDays > 0){
+          updateText = `به‌روزرسانی شده ${diffDays} روز قبل`;
+        } else if(diffHours > 0){
+          updateText = `به‌روزرسانی شده ${diffHours} ساعت قبل`;
+        } else {
+          const diffMinutes = Math.floor(diffMs / (1000 * 60));
+          if(diffMinutes > 0){
+            updateText = `به‌روزرسانی شده ${diffMinutes} دقیقه قبل`;
+          } else {
+            updateText = 'به‌روزرسانی شده همین الان';
+          }
+        }
+        
+        document.getElementById('last-update').textContent = updateText;
+      } else {
+        document.getElementById('last-update').textContent = 'زمان به‌روزرسانی نامشخص';
+      }
+    })
+    .catch(() => {
+      document.getElementById('last-update').textContent = 'خطا در بررسی زمان به‌روزرسانی';
+    });
+}
 
 /* ---------- تاریخ و ساعت شمسی ---------- */
 function updateDateTime(){
