@@ -92,6 +92,36 @@ footer{margin-top:1.5rem;font-size:.75rem;opacity:.7;text-align:center}
   .config-text{font-size:.78rem}
   .copy-btn{padding:.3rem .6rem;font-size:.75rem}
 }
+
+/* اضافه کردن به بخش استایل */
+.utility-btn {
+  font-size: 0.65rem;
+  padding: 0.45rem 0.9rem;
+  background: linear-gradient(90deg, #00c9ff 0%, #92fe9d 100%);
+  color: #04252e;
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: filter 0.2s;
+  cursor: pointer;
+  margin-right: 0.5rem;
+}
+.utility-btn:hover {
+  filter: brightness(1.08);
+}
+.utility-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.ping-indicator {
+  font-size: 0.7rem;
+  color: #92fe9d;
+  margin-left: 0.5rem;
+  min-width: 50px;
+  text-align: right;
+}
 </style>
 
 <body>
@@ -112,36 +142,194 @@ footer{margin-top:1.5rem;font-size:.75rem;opacity:.7;text-align:center}
   <div id="last-update">در حال بررسی آخرین به‌روزرسانی…</div>
 </header>
 
+<div class="utility-buttons" style="margin-bottom: 1rem; display: flex; justify-content: center;">
+  <button id="copy-all" class="utility-btn">کپی کل کانفیگ‌ها</button>
+  <button id="test-speed" class="utility-btn">تست سرعت و مرتب‌سازی</button>
+</div>
+
 <div id="box"><div id="loading">در حال بارگیری…</div></div>
 
 <footer> به‌روزرسانی توسط  <strong>© 2025 IRAN.AZAD </strong></footer>
 
 <script>
 /* ---------- بارگذاری کانفیگ‌ها ---------- */
+// متغیر برای نگهداری متن کامل کانفیگ‌ها
+let allConfigsText = '';
+
+// تابع استخراج دامنه از کانفیگ
+function extractDomain(configText) {
+  try {
+    // برای لینک‌های VLESS
+    if (configText.includes('vless://')) {
+      const match = configText.match(/@([^:]+):/);
+      return match ? match[1] : null;
+    }
+    // برای لینک‌های VMess
+    else if (configText.includes('vmess://')) {
+      // اگر Base64 است
+      const match = configText.match(/@([^:]+):/);
+      if (match) return match[1];
+      
+      // تلاش برای دیکد Base64 ساده (بدون پارس کامل JSON)
+      try {
+        const decoded = atob(configText.replace('vmess://', ''));
+        const simpleMatch = decoded.match(/"add":"([^"]+)"/);
+        return simpleMatch ? simpleMatch[1] : null;
+      } catch (e) {
+        return null;
+      }
+    }
+  } catch (e) {
+    console.error('خطا در استخراج دامنه:', e);
+  }
+  return null;
+}
+
+// تابع تست سرعت با استفاده از بارگذاری تصویر
+function testDomainSpeed(domain) {
+  return new Promise((resolve) => {
+    if (!domain) {
+      resolve(Infinity);
+      return;
+    }
+    
+    const startTime = Date.now();
+    const img = new Image();
+    
+    img.onload = () => {
+      const pingTime = Date.now() - startTime;
+      resolve(pingTime);
+    };
+    
+    img.onerror = () => {
+      const pingTime = Date.now() - startTime;
+      // اگر خطا داد ولی سریع بود، احتمالاً سرور فعال است
+      resolve(pingTime < 1000 ? pingTime : Infinity);
+    };
+    
+    // تلاش برای بارگذاری favicon از دامنه
+    img.src = `https://${domain}/favicon.ico?t=${Date.now()}`;
+    
+    // تایم‌اوت بعد از 3 ثانیه
+    setTimeout(() => resolve(Infinity), 3000);
+  });
+}
+
+// تابع کپی کردن تمام کانفیگ‌ها
+function copyAllConfigs() {
+  const copyBtn = document.getElementById('copy-all');
+  const originalText = copyBtn.textContent;
+  
+  navigator.clipboard.writeText(allConfigsText).then(() => {
+    copyBtn.textContent = 'تمام کانفیگ‌ها کپی شد!';
+    setTimeout(() => {
+      copyBtn.textContent = originalText;
+    }, 1500);
+  }).catch(err => {
+    copyBtn.textContent = 'خطا در کپی!';
+    setTimeout(() => {
+      copyBtn.textContent = originalText;
+    }, 1500);
+  });
+}
+
+// تابع تست سرعت و مرتب‌سازی
+async function testSpeedAndSort() {
+  const testBtn = document.getElementById('test-speed');
+  testBtn.disabled = true;
+  testBtn.textContent = 'در حال تست...';
+  
+  const configItems = document.querySelectorAll('.config-item');
+  const results = [];
+  
+  // تست همه کانفیگ‌ها
+  for (let i = 0; i < configItems.length; i++) {
+    const item = configItems[i];
+    const configText = item.querySelector('.config-text').textContent;
+    const domain = extractDomain(configText);
+    
+    // اضافه کردن نشانگر پینگ اگر وجود ندارد
+    let pingIndicator = item.querySelector('.ping-indicator');
+    if (!pingIndicator) {
+      pingIndicator = document.createElement('span');
+      pingIndicator.className = 'ping-indicator';
+      item.insertBefore(pingIndicator, item.querySelector('.copy-btn'));
+    }
+    
+    pingIndicator.textContent = 'در حال تست...';
+    
+    // تست سرعت
+    const ping = await testDomainSpeed(domain);
+    
+    // نمایش نتیجه
+    if (ping === Infinity) {
+      pingIndicator.textContent = '∞ ms';
+    } else {
+      pingIndicator.textContent = `${ping} ms`;
+    }
+    
+    results.push({ item, ping });
+  }
+  
+  // مرتب‌سازی بر اساس پینگ
+  results.sort((a, b) => a.ping - b.ping);
+  
+  // بازسازی DOM
+  const box = document.getElementById('box');
+  box.innerHTML = '';
+  results.forEach(result => {
+    box.appendChild(result.item);
+  });
+  
+  testBtn.disabled = false;
+  testBtn.textContent = 'تست سرعت و مرتب‌سازی';
+}
+
+// به‌روزرسانی تابع fetch برای ذخیره متن کامل کانفیگ‌ها
+// این بخش را جایگزین کنید یا تغییر دهید
 fetch('configs.txt')
-  .then(r=>r.text())
-  .then(text=>{
-    const box=document.getElementById('box');
-    box.innerHTML='';
-    const lines=text.trim().split(/\r?\n/).filter(Boolean);
-    if(!lines.length){box.textContent='فایلی یافت نشد';return;}
-    lines.forEach(line=>{
-      const item=document.createElement('div');item.className='config-item';
-      const span=document.createElement('span');span.className='config-text';span.textContent=line;
-      const btn=document.createElement('button');btn.className='copy-btn';btn.textContent='Copy';
-      btn.onclick=()=>{
-        navigator.clipboard.writeText(line).then(()=>{
-          const prev=btn.textContent;btn.textContent='Copied!';
-          setTimeout(()=>btn.textContent=prev,1500);
+  .then(r => r.text())
+  .then(text => {
+    allConfigsText = text; // ذخیره متن کامل
+    const box = document.getElementById('box');
+    box.innerHTML = '';
+    const lines = text.trim().split(/\r?\n/).filter(Boolean);
+    if (!lines.length) {
+      box.textContent = 'فایلی یافت نشد';
+      return;
+    }
+    
+    lines.forEach(line => {
+      const item = document.createElement('div');
+      item.className = 'config-item';
+      
+      const span = document.createElement('span');
+      span.className = 'config-text';
+      span.textContent = line;
+      
+      const btn = document.createElement('button');
+      btn.className = 'copy-btn';
+      btn.textContent = 'Copy';
+      btn.onclick = () => {
+        navigator.clipboard.writeText(line).then(() => {
+          const prev = btn.textContent;
+          btn.textContent = 'Copied!';
+          setTimeout(() => btn.textContent = prev, 1500);
         });
       };
-      item.append(span,btn);box.appendChild(item);
+      
+      item.append(span, btn);
+      box.appendChild(item);
     });
+    
+    // فعال کردن دکمه‌های جدید
+    document.getElementById('copy-all').onclick = copyAllConfigs;
+    document.getElementById('test-speed').onclick = testSpeedAndSort;
     
     // بررسی آخرین به‌روزرسانی فایل
     checkLastUpdate();
   })
-  .catch(()=>document.getElementById('box').textContent='خطا در بارگیری فایل');
+  .catch(() => document.getElementById('box').textContent = 'خطا در بارگیری فایل');
 
 /* ---------- بررسی آخرین به‌روزرسانی ---------- */
 function checkLastUpdate(){
