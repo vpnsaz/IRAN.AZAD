@@ -249,10 +249,9 @@ function hideModal() {
 
 // به‌روزرسانی تابع fetch برای ذخیره متن کامل کانفیگ‌ها
 // این بخش را جایگزین کنید یا تغییر دهید
-fetch('subscriptions.txt')
+fetch('https://raw.githubusercontent.com/vpnsaz/IRAN.AZAD/main/subscriptions.txt')
   .then(r => r.text())
   .then(text => {
-    allConfigsText = text; // ذخیره متن کامل
     const box = document.getElementById('box');
     box.innerHTML = '';
     const lines = text.trim().split(/\r?\n/).filter(Boolean);
@@ -305,20 +304,30 @@ fetch('subscriptions.txt')
         box.appendChild(item);
       } catch (e) {
         console.error('خطا در پردازش سابسکریپشن:', e);
+        // اضافه کردن نمایش خطا در صفحه
+        const errorItem = document.createElement('div');
+        errorItem.className = 'subscription-item';
+        errorItem.style.color = '#ff5555';
+        errorItem.textContent = `خطا در پردازش خط: ${line}`;
+        box.appendChild(errorItem);
       }
     });
     
     // بررسی آخرین به‌روزرسانی فایل
     checkLastUpdate();
   })
-  .catch(() => document.getElementById('box').textContent = 'خطا در بارگیری فایل');
+  .catch(error => {
+    console.error('خطا در بارگیری فایل:', error);
+    document.getElementById('box').innerHTML = 'خطا در بارگیری فایل سابسکریپشن‌ها. لطفاً صفحه را رفرش کنید یا بعداً دوباره تلاش کنید.';
+  });
 
 /* ---------- بررسی آخرین به‌روزرسانی ---------- */
 function checkLastUpdate(){
-  fetch('configs.txt', {method: 'HEAD'})
-    .then(response => {
-      const lastModified = response.headers.get('Last-Modified');
-      if(lastModified){
+  fetch('https://api.github.com/repos/vpnsaz/IRAN.AZAD/commits?path=subscriptions.txt&page=1&per_page=1')
+    .then(response => response.json())
+    .then(data => {
+      if(data && data.length > 0 && data[0].commit.committer.date){
+        const lastModified = data[0].commit.committer.date;
         const fileDate = new Date(lastModified);
         const now = new Date();
         const diffMs = now - fileDate;
