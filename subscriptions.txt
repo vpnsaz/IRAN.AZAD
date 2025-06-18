@@ -1,16 +1,25 @@
-https://raw.githubusercontent.com/barry-far/V2ray-config/main/Sub1.txt
+Vmess: https://raw.githubusercontent.com/barry-far/V2ray-config/main/Splitted-By-Protocol/vmess.txt
 
-https://raw.githubusercontent.com/barry-far/V2ray-config/main/Sub2.txt
+Vless: https://raw.githubusercontent.com/barry-far/V2ray-config/main/Splitted-By-Protocol/vless.txt
 
-https://raw.githubusercontent.com/barry-far/V2ray-config/main/Sub3.txt
+Trojan: https://raw.githubusercontent.com/barry-far/V2ray-config/main/Splitted-By-Protocol/trojan.txt
 
-https://raw.githubusercontent.com/barry-far/V2ray-config/main/Sub4.txt
+ShadowSocks: https://raw.githubusercontent.com/barry-far/V2ray-config/main/Splitted-By-Protocol/ss.txt
 
-https://raw.githubusercontent.com/barry-far/V2ray-config/main/Sub5.txt
+ShadowSocksR: https://raw.githubusercontent.com/barry-far/V2ray-config/main/Splitted-By-Protocol/ssr.txt
 
-https://raw.githubusercontent.com/barry-far/V2ray-config/main/Sub6.txt
+Subscription 1: https://raw.githubusercontent.com/barry-far/V2ray-config/main/Sub1.txt
 
-https://raw.githubusercontent.com/barry-far/V2ray-config/main/Sub7.txt
+Subscription 2: https://raw.githubusercontent.com/barry-far/V2ray-config/main/Sub2.txt
 
-https://raw.githubusercontent.com/barry-far/V2ray-config/main/Sub8.txt
- 
+Subscription 3: https://raw.githubusercontent.com/barry-far/V2ray-config/main/Sub3.txt
+
+Subscription 4: https://raw.githubusercontent.com/barry-far/V2ray-config/main/Sub4.txt
+
+Subscription 5: https://raw.githubusercontent.com/barry-far/V2ray-config/main/Sub5.txt
+
+Subscription 6: https://raw.githubusercontent.com/barry-far/V2ray-config/main/Sub6.txt
+
+Subscription 7: https://raw.githubusercontent.com/barry-far/V2ray-config/main/Sub7.txt
+
+Subscription 8: https://raw.githubusercontent.com/barry-far/V2ray-config/main/Sub8.txt
