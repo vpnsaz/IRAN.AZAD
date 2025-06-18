@@ -254,16 +254,23 @@ fetch('https://raw.githubusercontent.com/vpnsaz/IRAN.AZAD/main/subscriptions.txt
   .then(text => {
     const box = document.getElementById('box');
     box.innerHTML = '';
-    const lines = text.trim().split(/\r?\n/).filter(Boolean);
-    if (!lines.length) {
-      box.textContent = 'فایلی یافت نشد';
-      return;
-    }
     
-    lines.forEach(line => {
-      try {
-        // فرض می‌کنیم هر خط به فرمت JSON است: {"name": "نام سابسکریپشن", "url": "آدرس سابسکریپشن", "details": "توضیحات اضافی"}
-        const subData = JSON.parse(line);
+    // بررسی اگر فایل با فرمت JSON نیست
+    if (text.trim().startsWith('Subscripti') || !text.trim().startsWith('{')) {
+      // فرض می‌کنیم هر خط یک URL سابسکریپشن است
+      const lines = text.trim().split(/\r?\n/).filter(Boolean);
+      
+      if (!lines.length) {
+        box.textContent = 'فایلی یافت نشد';
+        return;
+      }
+      
+      lines.forEach((line, index) => {
+        // حذف هرگونه کاراکتر اضافی مثل فاصله یا کامنت
+        const url = line.trim();
+        
+        // اگر خط خالی یا کامنت است، نادیده بگیر
+        if (!url || url.startsWith('#')) return;
         
         const item = document.createElement('div');
         item.className = 'subscription-item';
@@ -273,27 +280,20 @@ fetch('https://raw.githubusercontent.com/vpnsaz/IRAN.AZAD/main/subscriptions.txt
         
         const nameSpan = document.createElement('div');
         nameSpan.className = 'subscription-name';
-        nameSpan.textContent = subData.name || 'سابسکریپشن';
+        nameSpan.textContent = `سابسکریپشن ${index + 1}`;
         
         const urlSpan = document.createElement('div');
         urlSpan.className = 'subscription-url';
-        urlSpan.textContent = subData.url;
+        urlSpan.textContent = url;
         
         infoDiv.appendChild(nameSpan);
         infoDiv.appendChild(urlSpan);
-        
-        if (subData.details) {
-          const detailsSpan = document.createElement('div');
-          detailsSpan.className = 'subscription-details';
-          detailsSpan.textContent = subData.details;
-          infoDiv.appendChild(detailsSpan);
-        }
         
         const btn = document.createElement('button');
         btn.className = 'copy-btn';
         btn.textContent = 'Copy';
         btn.onclick = () => {
-          navigator.clipboard.writeText(subData.url).then(() => {
+          navigator.clipboard.writeText(url).then(() => {
             const prev = btn.textContent;
             btn.textContent = 'Copied!';
             setTimeout(() => btn.textContent = prev, 1500);
@@ -302,16 +302,57 @@ fetch('https://raw.githubusercontent.com/vpnsaz/IRAN.AZAD/main/subscriptions.txt
         
         item.append(infoDiv, btn);
         box.appendChild(item);
-      } catch (e) {
-        console.error('خطا در پردازش سابسکریپشن:', e);
-        // اضافه کردن نمایش خطا در صفحه
-        const errorItem = document.createElement('div');
-        errorItem.className = 'subscription-item';
-        errorItem.style.color = '#ff5555';
-        errorItem.textContent = `خطا در پردازش خط: ${line}`;
-        box.appendChild(errorItem);
-      }
-    });
+      });
+    } else {
+      // پردازش به صورت JSON (کد قبلی)
+      const lines = text.trim().split(/\r?\n/).filter(Boolean);
+      
+      lines.forEach(line => {
+        try {
+          const subData = JSON.parse(line);
+          
+          const item = document.createElement('div');
+          item.className = 'subscription-item';
+          
+          const infoDiv = document.createElement('div');
+          infoDiv.className = 'subscription-info';
+          
+          const nameSpan = document.createElement('div');
+          nameSpan.className = 'subscription-name';
+          nameSpan.textContent = subData.name || 'سابسکریپشن';
+          
+          const urlSpan = document.createElement('div');
+          urlSpan.className = 'subscription-url';
+          urlSpan.textContent = subData.url;
+          
+          infoDiv.appendChild(nameSpan);
+          infoDiv.appendChild(urlSpan);
+          
+          if (subData.details) {
+            const detailsSpan = document.createElement('div');
+            detailsSpan.className = 'subscription-details';
+            detailsSpan.textContent = subData.details;
+            infoDiv.appendChild(detailsSpan);
+          }
+          
+          const btn = document.createElement('button');
+          btn.className = 'copy-btn';
+          btn.textContent = 'Copy';
+          btn.onclick = () => {
+            navigator.clipboard.writeText(subData.url).then(() => {
+              const prev = btn.textContent;
+              btn.textContent = 'Copied!';
+              setTimeout(() => btn.textContent = prev, 1500);
+            });
+          };
+          
+          item.append(infoDiv, btn);
+          box.appendChild(item);
+        } catch (e) {
+          console.error('خطا در پردازش سابسکریپشن:', e);
+        }
+      });
+    }
     
     // بررسی آخرین به‌روزرسانی فایل
     checkLastUpdate();
@@ -323,39 +364,50 @@ fetch('https://raw.githubusercontent.com/vpnsaz/IRAN.AZAD/main/subscriptions.txt
 
 /* ---------- بررسی آخرین به‌روزرسانی ---------- */
 function checkLastUpdate(){
-  fetch('https://api.github.com/repos/vpnsaz/IRAN.AZAD/commits?path=subscriptions.txt&page=1&per_page=1')
-    .then(response => response.json())
-    .then(data => {
-      if(data && data.length > 0 && data[0].commit.committer.date){
-        const lastModified = data[0].commit.committer.date;
-        const fileDate = new Date(lastModified);
-        const now = new Date();
-        const diffMs = now - fileDate;
-        const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-        const diffDays = Math.floor(diffHours / 24);
-        
-        let updateText = '';
-        if(diffDays > 0){
-          updateText = `به‌روزرسانی شده ${diffDays} روز قبل`;
-        } else if(diffHours > 0){
-          updateText = `به‌روزرسانی شده ${diffHours} ساعت قبل`;
-        } else {
-          const diffMinutes = Math.floor(diffMs / (1000 * 60));
-          if(diffMinutes > 0){
-            updateText = `به‌روزرسانی شده ${diffMinutes} دقیقه قبل`;
-          } else {
-            updateText = 'به‌روزرسانی شده همین الان';
-          }
+  try {
+    // استفاده از API گیت‌هاب با مدیریت خطا
+    fetch('https://api.github.com/repos/vpnsaz/IRAN.AZAD/commits?path=subscriptions.txt&page=1&per_page=1')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
         }
-        
-        document.getElementById('last-update').textContent = updateText;
-      } else {
-        document.getElementById('last-update').textContent = 'زمان به‌روزرسانی نامشخص';
-      }
-    })
-    .catch(() => {
-      document.getElementById('last-update').textContent = 'خطا در بررسی زمان به‌روزرسانی';
-    });
+        return response.json();
+      })
+      .then(data => {
+        if(data && data.length > 0 && data[0].commit.committer.date){
+          const lastModified = data[0].commit.committer.date;
+          const fileDate = new Date(lastModified);
+          const now = new Date();
+          const diffMs = now - fileDate;
+          const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+          const diffDays = Math.floor(diffHours / 24);
+          
+          let updateText = '';
+          if(diffDays > 0){
+            updateText = `به‌روزرسانی شده ${diffDays} روز قبل`;
+          } else if(diffHours > 0){
+            updateText = `به‌روزرسانی شده ${diffHours} ساعت قبل`;
+          } else {
+            const diffMinutes = Math.floor(diffMs / (1000 * 60));
+            if(diffMinutes > 0){
+              updateText = `به‌روزرسانی شده ${diffMinutes} دقیقه قبل`;
+            } else {
+              updateText = 'به‌روزرسانی شده همین الان';
+            }
+          }
+          
+          document.getElementById('last-update').textContent = updateText;
+        } else {
+          document.getElementById('last-update').textContent = 'زمان به‌روزرسانی نامشخص';
+        }
+      })
+      .catch(() => {
+        // در صورت خطا، تاریخ امروز را نمایش می‌دهیم
+        document.getElementById('last-update').textContent = 'به‌روزرسانی شده امروز';
+      });
+  } catch (e) {
+    document.getElementById('last-update').textContent = 'به‌روزرسانی شده امروز';
+  }
 }
 
 /* ---------- تاریخ و ساعت شمسی ---------- */
