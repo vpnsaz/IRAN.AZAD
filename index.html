@@ -309,6 +309,41 @@ footer{margin-top:1.5rem;font-size:.75rem;opacity:.7;text-align:center}
     text-align: center;
   }
 }
+
+/* استایل برای بخش آمار بازدید */
+.visitor-stats {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.visitor-stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.visitor-count {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #92fe9d;
+  margin-top: 0.2rem;
+}
+
+@media (max-width: 480px) {
+  .visitor-stats {
+    gap: 1rem;
+    font-size: 0.7rem;
+  }
+  
+  .visitor-count {
+    font-size: 0.9rem;
+  }
+}
 </style>
 
 <body>
@@ -335,12 +370,24 @@ footer{margin-top:1.5rem;font-size:.75rem;opacity:.7;text-align:center}
 
 <div id="box"><div id="loading">در حال بارگیری…</div></div>
 
+<!-- بخش آمار بازدید -->
+<div class="visitor-stats">
+  <div class="visitor-stat-item">
+    <span>بازدید کل</span>
+    <span id="total-visits" class="visitor-count">0</span>
+  </div>
+  <div class="visitor-stat-item">
+    <span>بازدید امروز</span>
+    <span id="today-visits" class="visitor-count">0</span>
+  </div>
+</div>
+
 <!-- بخش ارتباط با ما - نسخه شیک‌تر -->
 <div class="contact-section">
   <h3 class="contact-title">ارتباط با ما</h3>
   <div class="contact-row">
     <p class="contact-text">برای دریافت پشتیبانی، گزارش مشکلات یا پیشنهادات خود، به گروه تلگرام ما بپیوندید.</p>
-    <a href="https://t.me/vpnsaz_group" class="telegram-btn" target="_blank" rel="noopener noreferrer" title="عضویت در گروه تلگرام">
+    <a href="https://t.me/IRAN_AZAD_GROUP" class="telegram-btn" target="_blank" rel="noopener noreferrer" title="عضویت در گروه تلگرام">
       <svg class="telegram-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white">
         <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248l-1.97 9.269c-.145.658-.537.818-1.084.51l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.332-.373-.119L8.48 13.278l-2.95-.924c-.642-.204-.657-.642.136-.953l11.526-4.439c.537-.196 1.006.128.832.83z"/>
       </svg>
@@ -563,6 +610,35 @@ function updateDateTime(){
     new Intl.DateTimeFormat('fa-IR-u-ca-persian',opts).format(now);
 }
 updateDateTime(); setInterval(updateDateTime,30000);
+
+/* ---------- شمارش بازدید ---------- */
+document.addEventListener('DOMContentLoaded', function() {
+  // کلید منحصر به فرد برای سایت شما
+  const siteKey = 'iran-azad-vpn';
+  
+  // برای کل بازدیدها
+  fetch(`https://api.countapi.xyz/hit/${siteKey}/visits`)
+    .then(response => response.json())
+    .then(data => {
+      document.getElementById('total-visits').textContent = data.value.toLocaleString('fa-IR');
+    })
+    .catch(error => {
+      console.error('خطا در دریافت آمار کل بازدید:', error);
+      document.getElementById('total-visits').textContent = '0';
+    });
+  
+  // برای بازدیدهای امروز
+  const today = new Date().toISOString().slice(0, 10);
+  fetch(`https://api.countapi.xyz/hit/${siteKey}/${today}`)
+    .then(response => response.json())
+    .then(data => {
+      document.getElementById('today-visits').textContent = data.value.toLocaleString('fa-IR');
+    })
+    .catch(error => {
+      console.error('خطا در دریافت آمار بازدید امروز:', error);
+      document.getElementById('today-visits').textContent = '0';
+    });
+});
 </script>
 
 <!-- مودال آموزش راه‌اندازی -->
