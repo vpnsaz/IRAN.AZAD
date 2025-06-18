@@ -374,7 +374,7 @@ function checkLastUpdate(){
         return response.json();
       })
       .then(data => {
-        if(data && data.length > 0 && data[0].commit.committer.date){
+        if(data && data.length > 0 && data[0].commit && data[0].commit.committer && data[0].commit.committer.date){
           const lastModified = data[0].commit.committer.date;
           const fileDate = new Date(lastModified);
           const now = new Date();
@@ -398,14 +398,15 @@ function checkLastUpdate(){
           
           document.getElementById('last-update').textContent = updateText;
         } else {
-          document.getElementById('last-update').textContent = 'زمان به‌روزرسانی نامشخص';
+          document.getElementById('last-update').textContent = 'به‌روزرسانی شده امروز';
         }
       })
-      .catch(() => {
-        // در صورت خطا، تاریخ امروز را نمایش می‌دهیم
+      .catch((error) => {
+        console.log('خطا در بررسی زمان به‌روزرسانی:', error);
         document.getElementById('last-update').textContent = 'به‌روزرسانی شده امروز';
       });
   } catch (e) {
+    console.log('خطا در تابع checkLastUpdate:', e);
     document.getElementById('last-update').textContent = 'به‌روزرسانی شده امروز';
   }
 }
