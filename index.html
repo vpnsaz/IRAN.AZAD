@@ -614,29 +614,83 @@ updateDateTime(); setInterval(updateDateTime,30000);
 /* ---------- شمارش بازدید ---------- */
 document.addEventListener('DOMContentLoaded', function() {
   // کلید منحصر به فرد برای سایت شما
-  const siteKey = 'iran-azad-vpn';
+  const siteKey = 'iran-azad-vpn-test';
   
-  // برای کل بازدیدها
+  // تابع برای نمایش آمار با فرمت فارسی
+  function displayCount(elementId, count) {
+    try {
+      document.getElementById(elementId).textContent = Number(count).toLocaleString('fa-IR');
+    } catch (e) {
+      console.error('خطا در نمایش آمار:', e);
+      document.getElementById(elementId).textContent = count;
+    }
+  }
+  
+  // برای کل بازدیدها - ابتدا مقدار را دریافت می‌کنیم
   fetch(`https://api.countapi.xyz/hit/${siteKey}/visits`)
-    .then(response => response.json())
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      return response.json();
+    })
     .then(data => {
-      document.getElementById('total-visits').textContent = data.value.toLocaleString('fa-IR');
+      console.log('آمار کل بازدید:', data);
+      if (data && typeof data.value !== 'undefined') {
+        displayCount('total-visits', data.value);
+      }
     })
     .catch(error => {
       console.error('خطا در دریافت آمار کل بازدید:', error);
-      document.getElementById('total-visits').textContent = '0';
+      
+      // در صورت خطا، سعی می‌کنیم فقط مقدار را بخوانیم بدون افزایش
+      fetch(`https://api.countapi.xyz/get/${siteKey}/visits`)
+        .then(response => response.json())
+        .then(data => {
+          if (data && typeof data.value !== 'undefined') {
+            displayCount('total-visits', data.value);
+          }
+        })
+        .catch(e => {
+          console.error('خطا در خواندن آمار کل بازدید:', e);
+          // اگر کلید وجود نداشت، آن را ایجاد می‌کنیم
+          fetch(`https://api.countapi.xyz/create?namespace=${siteKey}&key=visits&value=1`)
+            .then(() => displayCount('total-visits', 1));
+        });
     });
   
   // برای بازدیدهای امروز
   const today = new Date().toISOString().slice(0, 10);
   fetch(`https://api.countapi.xyz/hit/${siteKey}/${today}`)
-    .then(response => response.json())
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      return response.json();
+    })
     .then(data => {
-      document.getElementById('today-visits').textContent = data.value.toLocaleString('fa-IR');
+      console.log('آمار بازدید امروز:', data);
+      if (data && typeof data.value !== 'undefined') {
+        displayCount('today-visits', data.value);
+      }
     })
     .catch(error => {
       console.error('خطا در دریافت آمار بازدید امروز:', error);
-      document.getElementById('today-visits').textContent = '0';
+      
+      // در صورت خطا، سعی می‌کنیم فقط مقدار را بخوانیم بدون افزایش
+      fetch(`https://api.countapi.xyz/get/${siteKey}/${today}`)
+        .then(response => response.json())
+        .then(data => {
+          if (data && typeof data.value !== 'undefined') {
+            displayCount('today-visits', data.value);
+          }
+        })
+        .catch(e => {
+          console.error('خطا در خواندن آمار بازدید امروز:', e);
+          // اگر کلید وجود نداشت، آن را ایجاد می‌کنیم
+          fetch(`https://api.countapi.xyz/create?namespace=${siteKey}&key=${today}&value=1`)
+            .then(() => displayCount('today-visits', 1));
+        });
     });
 });
 </script>
