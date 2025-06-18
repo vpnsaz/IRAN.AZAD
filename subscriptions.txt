@@ -1,15 +1,15 @@
-Subscription 1: https://raw.githubusercontent.com/barry-far/V2ray-config/main/Sub1.txt
+https://raw.githubusercontent.com/barry-far/V2ray-config/main/Sub1.txt
 
-Subscription 2: https://raw.githubusercontent.com/barry-far/V2ray-config/main/Sub2.txt
+https://raw.githubusercontent.com/barry-far/V2ray-config/main/Sub2.txt
 
-Subscription 3: https://raw.githubusercontent.com/barry-far/V2ray-config/main/Sub3.txt
+https://raw.githubusercontent.com/barry-far/V2ray-config/main/Sub3.txt
 
-Subscription 4: https://raw.githubusercontent.com/barry-far/V2ray-config/main/Sub4.txt
+https://raw.githubusercontent.com/barry-far/V2ray-config/main/Sub4.txt
 
-Subscription 5: https://raw.githubusercontent.com/barry-far/V2ray-config/main/Sub5.txt
+https://raw.githubusercontent.com/barry-far/V2ray-config/main/Sub5.txt
 
-Subscription 6: https://raw.githubusercontent.com/barry-far/V2ray-config/main/Sub6.txt
+https://raw.githubusercontent.com/barry-far/V2ray-config/main/Sub6.txt
 
-Subscription 7: https://raw.githubusercontent.com/barry-far/V2ray-config/main/Sub7.txt
+https://raw.githubusercontent.com/barry-far/V2ray-config/main/Sub7.txt
 
-Subscription 8: https://raw.githubusercontent.com/barry-far/V2ray-config/main/Sub8.txt
+https://raw.githubusercontent.com/barry-far/V2ray-config/main/Sub8.txt
