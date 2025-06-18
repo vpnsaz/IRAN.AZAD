@@ -181,6 +181,134 @@ footer{margin-top:1.5rem;font-size:.75rem;opacity:.7;text-align:center}
   margin: 10px 0;
   border: 1px solid #ffffff22;
 }
+
+.telegram-icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
+}
+
+.telegram-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: linear-gradient(90deg, #0088cc, #00a0e3);
+  color: white;
+  padding: 0.7rem 1.4rem;
+  border-radius: 50px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 136, 204, 0.4);
+}
+
+.telegram-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 136, 204, 0.5);
+  filter: brightness(1.05);
+}
+
+.telegram-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 10px rgba(0, 136, 204, 0.3);
+}
+
+/* استایل بخش ارتباط با ما - نسخه شیک‌تر */
+.contact-section {
+  margin-top: 2.5rem;
+  margin-bottom: 2rem;
+  text-align: center;
+  background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.1));
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 16px;
+  padding: 1.5rem;
+  max-width: 800px;
+  width: 100%;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(4px);
+}
+
+.contact-title {
+  font-size: 1.3rem;
+  color: #92fe9d;
+  margin-bottom: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  position: relative;
+  display: inline-block;
+}
+
+.contact-title:after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 3px;
+  background: linear-gradient(90deg, #00c9ff, #92fe9d);
+  border-radius: 3px;
+}
+
+.contact-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 1.5rem;
+}
+
+.contact-text {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.9);
+  margin: 0;
+}
+
+.telegram-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(90deg, #0088cc, #00a0e3);
+  color: white;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 136, 204, 0.4);
+  flex-shrink: 0;
+}
+
+.telegram-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 136, 204, 0.5);
+  filter: brightness(1.05);
+}
+
+.telegram-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 10px rgba(0, 136, 204, 0.3);
+}
+
+.telegram-icon {
+  width: 22px;
+  height: 22px;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
+}
+
+@media (max-width: 600px) {
+  .contact-row {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .contact-text {
+    text-align: center;
+  }
+}
 </style>
 
 <body>
@@ -206,6 +334,19 @@ footer{margin-top:1.5rem;font-size:.75rem;opacity:.7;text-align:center}
 </div>
 
 <div id="box"><div id="loading">در حال بارگیری…</div></div>
+
+<!-- بخش ارتباط با ما - نسخه شیک‌تر -->
+<div class="contact-section">
+  <h3 class="contact-title">ارتباط با ما</h3>
+  <div class="contact-row">
+    <p class="contact-text">برای دریافت پشتیبانی، گزارش مشکلات یا پیشنهادات خود، به گروه تلگرام ما بپیوندید.</p>
+    <a href="https://t.me/IRAN_AZAD_GROUP" class="telegram-btn" target="_blank" rel="noopener noreferrer" title="عضویت در گروه تلگرام">
+      <svg class="telegram-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white">
+        <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248l-1.97 9.269c-.145.658-.537.818-1.084.51l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.332-.373-.119L8.48 13.278l-2.95-.924c-.642-.204-.657-.642.136-.953l11.526-4.439c.537-.196 1.006.128.832.83z"/>
+      </svg>
+    </a>
+  </div>
+</div>
 
 <footer> به‌روزرسانی توسط  <strong>© 2025 IRAN.AZAD </strong></footer>
 
