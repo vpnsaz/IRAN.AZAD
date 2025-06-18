@@ -309,41 +309,6 @@ footer{margin-top:1.5rem;font-size:.75rem;opacity:.7;text-align:center}
     text-align: center;
   }
 }
-
-/* استایل برای بخش آمار بازدید */
-.visitor-stats {
-  display: flex;
-  justify-content: center;
-  gap: 2rem;
-  margin-top: 1rem;
-  margin-bottom: 1rem;
-  font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.7);
-}
-
-.visitor-stat-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.visitor-count {
-  font-size: 1rem;
-  font-weight: 700;
-  color: #92fe9d;
-  margin-top: 0.2rem;
-}
-
-@media (max-width: 480px) {
-  .visitor-stats {
-    gap: 1rem;
-    font-size: 0.7rem;
-  }
-  
-  .visitor-count {
-    font-size: 0.9rem;
-  }
-}
 </style>
 
 <body>
@@ -369,18 +334,6 @@ footer{margin-top:1.5rem;font-size:.75rem;opacity:.7;text-align:center}
 </div>
 
 <div id="box"><div id="loading">در حال بارگیری…</div></div>
-
-<!-- بخش آمار بازدید -->
-<div class="visitor-stats">
-  <div class="visitor-stat-item">
-    <span>بازدید کل</span>
-    <span id="total-visits" class="visitor-count">0</span>
-  </div>
-  <div class="visitor-stat-item">
-    <span>بازدید امروز</span>
-    <span id="today-visits" class="visitor-count">0</span>
-  </div>
-</div>
 
 <!-- بخش ارتباط با ما - نسخه شیک‌تر -->
 <div class="contact-section">
@@ -610,89 +563,6 @@ function updateDateTime(){
     new Intl.DateTimeFormat('fa-IR-u-ca-persian',opts).format(now);
 }
 updateDateTime(); setInterval(updateDateTime,30000);
-
-/* ---------- شمارش بازدید ---------- */
-document.addEventListener('DOMContentLoaded', function() {
-  // کلید منحصر به فرد برای سایت شما
-  const siteKey = 'iran-azad-vpn-test';
-  
-  // تابع برای نمایش آمار با فرمت فارسی
-  function displayCount(elementId, count) {
-    try {
-      document.getElementById(elementId).textContent = Number(count).toLocaleString('fa-IR');
-    } catch (e) {
-      console.error('خطا در نمایش آمار:', e);
-      document.getElementById(elementId).textContent = count;
-    }
-  }
-  
-  // برای کل بازدیدها - ابتدا مقدار را دریافت می‌کنیم
-  fetch(`https://api.countapi.xyz/hit/${siteKey}/visits`)
-    .then(response => {
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-      return response.json();
-    })
-    .then(data => {
-      console.log('آمار کل بازدید:', data);
-      if (data && typeof data.value !== 'undefined') {
-        displayCount('total-visits', data.value);
-      }
-    })
-    .catch(error => {
-      console.error('خطا در دریافت آمار کل بازدید:', error);
-      
-      // در صورت خطا، سعی می‌کنیم فقط مقدار را بخوانیم بدون افزایش
-      fetch(`https://api.countapi.xyz/get/${siteKey}/visits`)
-        .then(response => response.json())
-        .then(data => {
-          if (data && typeof data.value !== 'undefined') {
-            displayCount('total-visits', data.value);
-          }
-        })
-        .catch(e => {
-          console.error('خطا در خواندن آمار کل بازدید:', e);
-          // اگر کلید وجود نداشت، آن را ایجاد می‌کنیم
-          fetch(`https://api.countapi.xyz/create?namespace=${siteKey}&key=visits&value=1`)
-            .then(() => displayCount('total-visits', 1));
-        });
-    });
-  
-  // برای بازدیدهای امروز
-  const today = new Date().toISOString().slice(0, 10);
-  fetch(`https://api.countapi.xyz/hit/${siteKey}/${today}`)
-    .then(response => {
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-      return response.json();
-    })
-    .then(data => {
-      console.log('آمار بازدید امروز:', data);
-      if (data && typeof data.value !== 'undefined') {
-        displayCount('today-visits', data.value);
-      }
-    })
-    .catch(error => {
-      console.error('خطا در دریافت آمار بازدید امروز:', error);
-      
-      // در صورت خطا، سعی می‌کنیم فقط مقدار را بخوانیم بدون افزایش
-      fetch(`https://api.countapi.xyz/get/${siteKey}/${today}`)
-        .then(response => response.json())
-        .then(data => {
-          if (data && typeof data.value !== 'undefined') {
-            displayCount('today-visits', data.value);
-          }
-        })
-        .catch(e => {
-          console.error('خطا در خواندن آمار بازدید امروز:', e);
-          // اگر کلید وجود نداشت، آن را ایجاد می‌کنیم
-          fetch(`https://api.countapi.xyz/create?namespace=${siteKey}&key=${today}&value=1`)
-            .then(() => displayCount('today-visits', 1));
-        });
-    });
-});
 </script>
 
 <!-- مودال آموزش راه‌اندازی -->
