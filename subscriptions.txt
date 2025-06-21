@@ -1,8 +1,8 @@
-https://github.com/vpnsaz/IRAN.AZAD/blob/main/whatsapp.txt
+https://raw.githubusercontent.com/vpnsaz/IRAN.AZAD/refs/heads/main/whatsapp.txt
 
-https://github.com/vpnsaz/IRAN.AZAD/blob/main/instagram.txt
+https://raw.githubusercontent.com/vpnsaz/IRAN.AZAD/refs/heads/main/instagram.txt
 
-https://github.com/vpnsaz/IRAN.AZAD/blob/main/telegram.txt
+https://raw.githubusercontent.com/vpnsaz/IRAN.AZAD/refs/heads/main/telegram.txt
 
 https://raw.githubusercontent.com/barry-far/V2ray-config/main/Splitted-By-Protocol/vmess.txt
 
