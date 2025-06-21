@@ -190,18 +190,18 @@ footer{margin-top:1.5rem;font-size:.75rem;opacity:.7;text-align:center}
 }
 
 .telegram-btn {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 0.5rem;
+  justify-content: center;
   background: linear-gradient(90deg, #0088cc, #00a0e3);
   color: white;
-  padding: 0.7rem 1.4rem;
-  border-radius: 50px;
-  font-weight: 700;
-  font-size: 0.9rem;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
   text-decoration: none;
   transition: all 0.3s ease;
   box-shadow: 0 4px 15px rgba(0, 136, 204, 0.4);
+  flex-shrink: 0;
 }
 
 .telegram-btn:hover {
@@ -215,12 +215,17 @@ footer{margin-top:1.5rem;font-size:.75rem;opacity:.7;text-align:center}
   box-shadow: 0 2px 10px rgba(0, 136, 204, 0.3);
 }
 
+.telegram-icon {
+  width: 22px;
+  height: 22px;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
+}
+
 /* استایل بخش ارتباط با ما - نسخه شیک‌تر */
 .contact-section {
   margin-top: 2.5rem;
   margin-bottom: 2rem;
-  text-align: center;
-  background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.1));
+  text-align: center;  background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.1));
   border: 1px solid rgba(255,255,255,0.15);
   border-radius: 16px;
   padding: 1.5rem;
@@ -311,18 +316,51 @@ footer{margin-top:1.5rem;font-size:.75rem;opacity:.7;text-align:center}
   }
 }
 
-/* استایل برای پیام‌های خطا */
-.error-message {
-  padding: 1rem;
-  background-color: rgba(255, 0, 0, 0.1);
-  border: 1px solid rgba(255, 0, 0, 0.3);
-  border-radius: 8px;
-  color: #ff6b6b;
-  text-align: center;
-  font-size: 0.9rem;
-  line-height: 1.5;
+/* استایل برای دکمه‌های شبکه‌های اجتماعی */
+.social-buttons {
+  display: flex;
+  gap: 12px;
+  flex-shrink: 0;
 }
-</style>
+
+.social-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.social-icon {
+  width: 22px;
+  height: 22px;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
+}
+
+/* استایل خاص برای تلگرام */
+.telegram-btn {
+  background: linear-gradient(90deg, #0088cc, #00a0e3);
+}
+
+/* استایل خاص برای اینستاگرام */
+.instagram-btn {
+  background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+}
+
+.social-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+  filter: brightness(1.05);
+}
+
+.social-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}</style>
 
 <body>
 
@@ -352,15 +390,21 @@ footer{margin-top:1.5rem;font-size:.75rem;opacity:.7;text-align:center}
 <div class="contact-section">
   <h3 class="contact-title">ارتباط با ما</h3>
   <div class="contact-row">
-    <p class="contact-text">برای دریافت پشتیبانی، گزارش مشکلات یا پیشنهادات خود، به گروه تلگرام ما بپیوندید.</p>
-    <a href="https://t.me/vpnsaz_group" class="telegram-btn" target="_blank" rel="noopener noreferrer" title="عضویت در گروه تلگرام">
-      <svg class="telegram-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white">
-        <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248l-1.97 9.269c-.145.658-.537.818-1.084.51l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.332-.373-.119L8.48 13.278l-2.95-.924c-.642-.204-.657-.642.136-.953l11.526-4.439c.537-.196 1.006.128.832.83z"/>
-      </svg>
-    </a>
+    <p class="contact-text">برای دریافت پشتیبانی، گزارش مشکلات یا پیشنهادات خود، به شبکه‌های اجتماعی ما بپیوندید.</p>
+    <div class="social-buttons">
+      <a href="https://t.me/vpnsaz_group" class="social-btn telegram-btn" target="_blank" rel="noopener noreferrer" title="عضویت در گروه تلگرام">
+        <svg class="social-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white">
+          <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248l-1.97 9.269c-.145.658-.537.818-1.084.51l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.332-.373-.119L8.48 13.278l-2.95-.924c-.642-.204-.657-.642.136-.953l11.526-4.439c.537-.196 1.006.128.832.83z"/>
+        </svg>
+      </a>
+      <a href="https://www.instagram.com/vpnsaz.iran?igsh=NTdiMHEyODIyNTgz" class="social-btn instagram-btn" target="_blank" rel="noopener noreferrer" title="دنبال کردن در اینستاگرام">
+        <svg class="social-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white">
+          <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
+        </svg>
+      </a>
+    </div>
   </div>
 </div>
-
 <footer> به‌روزرسانی توسط  <strong>© 2025 IRAN.AZAD </strong></footer>
 
 <script>
