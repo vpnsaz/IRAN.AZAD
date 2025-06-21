@@ -23,3 +23,5 @@ https://raw.githubusercontent.com/barry-far/V2ray-config/main/Sub6.txt
 https://raw.githubusercontent.com/barry-far/V2ray-config/main/Sub7.txt
 
 https://raw.githubusercontent.com/barry-far/V2ray-config/main/Sub8.txt
+
+https://github.com/vpnsaz/IRAN.AZAD/blob/main/configs.txt
